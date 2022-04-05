@@ -15,6 +15,22 @@ const routes = [
     ]
   },
   {
+    path: '/cart',
+    component: () => import('@/views/Cart')
+  },
+  {
+    path: '/category',
+    component: () => import('@/views/Category')
+  },
+  {
+    path: '/topic',
+    component: () => import('@/views/Topic')
+  },
+  {
+    path: '/user',
+    component: () => import('@/views/User')
+  },
+  {
     path: '/',
     redirect: '/mepage'
   }

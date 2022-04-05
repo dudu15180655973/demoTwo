@@ -1,13 +1,19 @@
 <template>
   <div>
-    <div class="historyhot">
+    <div class="historyhot" v-if="clearfn">
       <div class="topbox">
         <h4>历史记录</h4>
-        <van-icon name="delete-o" />
+        <van-icon name="delete-o" @click="clearhistory" />
       </div>
       <div class="bottombox">
-        <van-tag plain type="primary" v-for="item in 14" :key="item" class="tag"
-          >标签</van-tag
+        <van-tag
+          plain
+          type="primary"
+          v-for="item in historylist"
+          :key="item"
+          class="tag"
+          @click="clickander(item)"
+          >{{ item }}</van-tag
         >
       </div>
     </div>
@@ -16,8 +22,14 @@
         <h4>热门搜索</h4>
       </div>
       <div class="bottombox">
-        <van-tag plain type="primary" v-for="item in 14" :key="item" class="tag"
-          >标签</van-tag
+        <van-tag
+          plain
+          :type="item.is_hot ? 'primary' : 'danger'"
+          v-for="item in hotlist"
+          :key="item.keyword"
+          class="tag"
+          @click="clickander(item.keyword)"
+          >{{ item.keyword }}</van-tag
         >
       </div>
     </div>
@@ -25,23 +37,46 @@
 </template>
 
 <script>
-import { Gethistoryhot } from '@/request/api'
+import { Gethistoryhot, Clearhistory } from '@/request/api'
 export default {
   data() {
     return {
-      historylist: '',
-      hotlist: ''
+      historylist: [],
+      hotlist: [],
+      clearfn: true
     }
   },
   created() {
-    Gethistoryhot()
-      .then((res) => {
-        // console.log(res.data.banner)
-        console.log(res.data)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    this.gethistoryhot()
+  },
+  methods: {
+    // 清除历史数据
+    async clearhistory() {
+      const res = await Clearhistory()
+      if (res.errno == 0) {
+        this.$toast.success('成功文案')
+        setTimeout(() => {
+          this.clearfn = false
+        }, 1000)
+      }
+    },
+    // 请求历史和热门的数据
+    async gethistoryhot() {
+      const res = await Gethistoryhot()
+      if (res.errno == 0) {
+        const { historyKeywordList, hotKeywordList, defaultKeyword } = res.data
+        this.historylist = historyKeywordList
+        this.hotlist = hotKeywordList
+        // 触发自定义事件
+        this.$emit('getData', defaultKeyword)
+      }
+      console.log(res)
+    },
+    // 点击标签搜索相关产品
+    clickander(item) {
+      // console.log(item)
+      this.$emit('clickander', item)
+    }
   }
 }
 </script>
