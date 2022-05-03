@@ -19,6 +19,7 @@ export default {
     }
   },
   computed: {
+    // 控制底部组件按钮路由
     active: {
       get() {
         switch (this.$route.path) {

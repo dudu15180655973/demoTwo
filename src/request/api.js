@@ -15,7 +15,11 @@ export const Getsearchlist = (params) => {
 export const Getshonplist = (params) => {
   return request.get('/goods/list', { params })
 }
-// 清楚历史记录
+// 清除历史记录
 export const Clearhistory = () => {
   return request.post('/search/clearhistory')
+}
+// 登录接口
+export const Getlogin = (params) => {
+  return request.post('/auth/loginByWeb', params)
 }
